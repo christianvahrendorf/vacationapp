@@ -11,7 +11,7 @@ export default async function LoginPage({
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
         <h1 className="text-xl font-semibold text-slate-900">
-          Urlaubsziele der Familie
+          Destination Finder der Familie Meyer
         </h1>
         <p className="mt-1 text-sm text-slate-500">
           Melde dich mit deinem Familien-Account an.

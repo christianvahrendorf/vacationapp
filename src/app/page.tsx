@@ -61,7 +61,7 @@ export default async function Home() {
       <header className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-slate-900">
-            Urlaubsziele der Familie
+            Destination Finder der Familie Meyer
           </h1>
           <p className="text-sm text-slate-500">Angemeldet als {myName}</p>
         </div>

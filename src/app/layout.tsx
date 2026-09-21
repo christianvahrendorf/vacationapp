@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Urlaubsziele der Familie",
+  title: "Destination Finder der Familie Meyer",
   description: "Urlaubsziele vorschlagen und gemeinsam abstimmen",
 };
 
