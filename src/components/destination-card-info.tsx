@@ -108,18 +108,18 @@ export function DestinationCardInfo({
       {description && <p className="mt-1 text-sm text-ink-soft">{description}</p>}
 
       {isOwner && !confirmingDelete && (
-        <div className="mt-2 flex gap-3">
+        <div className="mt-3 flex gap-2">
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="text-xs font-medium text-ink-soft underline-offset-2 hover:text-ink hover:underline"
+            className="rounded-full bg-surface px-3.5 py-1.5 text-xs font-semibold text-ink hover:bg-surface-2"
           >
             Bearbeiten
           </button>
           <button
             type="button"
             onClick={() => setConfirmingDelete(true)}
-            className="text-xs font-medium text-ink-soft underline-offset-2 hover:text-ink hover:underline"
+            className="rounded-full bg-surface px-3.5 py-1.5 text-xs font-semibold text-ink hover:bg-surface-2"
           >
             Löschen
           </button>
@@ -127,7 +127,7 @@ export function DestinationCardInfo({
       )}
 
       {isOwner && confirmingDelete && (
-        <div className="mt-2 flex items-center gap-3">
+        <div className="mt-3 flex flex-wrap items-center gap-2">
           <span className="text-xs font-medium text-ink">Wirklich löschen?</span>
           <button
             type="button"
@@ -137,7 +137,7 @@ export function DestinationCardInfo({
                 await deleteDestination(destinationId);
               })
             }
-            className="text-xs font-semibold text-accent underline-offset-2 hover:underline disabled:opacity-50"
+            className="rounded-full bg-accent px-3.5 py-1.5 text-xs font-semibold text-accent-ink hover:opacity-90 disabled:opacity-50"
           >
             {isPending ? "Wird gelöscht…" : "Ja, löschen"}
           </button>
@@ -145,7 +145,7 @@ export function DestinationCardInfo({
             type="button"
             disabled={isPending}
             onClick={() => setConfirmingDelete(false)}
-            className="text-xs font-medium text-ink-soft underline-offset-2 hover:text-ink hover:underline disabled:opacity-50"
+            className="rounded-full bg-surface px-3.5 py-1.5 text-xs font-semibold text-ink hover:bg-surface-2 disabled:opacity-50"
           >
             Abbrechen
           </button>
