@@ -26,7 +26,7 @@ export default async function Home() {
     await Promise.all([
       supabase
         .from("destinations")
-        .select("id, title, description, created_at, created_by")
+        .select("id, title, description, image_url, created_at, created_by")
         .order("created_at", { ascending: false }),
       supabase.from("votes").select("destination_id, user_id, score"),
       supabase.from("profiles").select("id, display_name"),
@@ -108,17 +108,37 @@ export default async function Home() {
               >
                 <div
                   className="relative flex h-28 items-start justify-between overflow-hidden p-4"
-                  style={{ background: CARD_GRADIENTS[index % CARD_GRADIENTS.length] }}
+                  style={
+                    destination.image_url
+                      ? undefined
+                      : { background: CARD_GRADIENTS[index % CARD_GRADIENTS.length] }
+                  }
                 >
-                  <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">
+                  {destination.image_url && (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={destination.image_url}
+                        alt=""
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                      <div
+                        aria-hidden
+                        className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"
+                      />
+                    </>
+                  )}
+                  <span className="relative rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">
                     Platz {index + 1}
                   </span>
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute -bottom-5 right-3 select-none font-display text-7xl font-bold text-white/25"
-                  >
-                    {destination.title.charAt(0).toUpperCase()}
-                  </span>
+                  {!destination.image_url && (
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute -bottom-5 right-3 select-none font-display text-7xl font-bold text-white/25"
+                    >
+                      {destination.title.charAt(0).toUpperCase()}
+                    </span>
+                  )}
                 </div>
 
                 <div className="p-5">
