@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { findDestinationImage } from "@/lib/destination-image";
+import { findDestinationClimate } from "@/lib/destination-climate";
 
 export async function logout() {
   const supabase = await createClient();
@@ -23,13 +24,17 @@ export async function addDestination(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const imageUrl = await findDestinationImage(title);
+  const [imageUrl, climate] = await Promise.all([
+    findDestinationImage(title),
+    findDestinationClimate(title),
+  ]);
 
   await supabase.from("destinations").insert({
     title,
     description: description || null,
     created_by: user.id,
     image_url: imageUrl,
+    climate,
   });
 
   revalidatePath("/");
@@ -49,18 +54,18 @@ export async function updateDestination(destinationId: string, formData: FormDat
 
   const { data: existing } = await supabase
     .from("destinations")
-    .select("title, image_url")
+    .select("title, image_url, climate")
     .eq("id", destinationId)
     .single();
 
-  const imageUrl =
-    existing && existing.title !== title
-      ? await findDestinationImage(title)
-      : (existing?.image_url ?? null);
+  const titleChanged = existing && existing.title !== title;
+  const [imageUrl, climate] = titleChanged
+    ? await Promise.all([findDestinationImage(title), findDestinationClimate(title)])
+    : [existing?.image_url ?? null, existing?.climate ?? null];
 
   await supabase
     .from("destinations")
-    .update({ title, description: description || null, image_url: imageUrl })
+    .update({ title, description: description || null, image_url: imageUrl, climate })
     .eq("id", destinationId);
 
   revalidatePath("/");

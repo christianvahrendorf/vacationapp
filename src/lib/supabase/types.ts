@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       destinations: {
         Row: {
+          climate: Json | null
           created_at: string
           created_by: string
           description: string | null
@@ -24,6 +25,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          climate?: Json | null
           created_at?: string
           created_by: string
           description?: string | null
@@ -32,6 +34,7 @@ export type Database = {
           title: string
         }
         Update: {
+          climate?: Json | null
           created_at?: string
           created_by?: string
           description?: string | null

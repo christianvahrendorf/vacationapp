@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { deleteDestination, updateDestination } from "@/app/actions";
 import { RatingWidget } from "@/components/rating-widget";
+import type { DestinationClimate } from "@/lib/destination-climate";
 
 export function DestinationCardInfo({
   destinationId,
@@ -13,6 +14,7 @@ export function DestinationCardInfo({
   myVote,
   breakdown,
   isOwner,
+  climate,
 }: {
   destinationId: string;
   title: string;
@@ -22,6 +24,7 @@ export function DestinationCardInfo({
   myVote: number | null;
   breakdown: { name: string; score: number }[];
   isOwner: boolean;
+  climate: DestinationClimate | null;
 }) {
   const [editing, setEditing] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -106,6 +109,15 @@ export function DestinationCardInfo({
       </div>
 
       {description && <p className="mt-1 text-sm text-ink-soft">{description}</p>}
+
+      {climate && (
+        <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-xs text-ink-soft">
+          <span className="font-semibold text-ink">Beste Reisezeit:</span>
+          <span>{climate.bestMonthsLabel}</span>
+          <span className="text-line">·</span>
+          <span>⌀ {climate.avgHighBestMonths}°C</span>
+        </div>
+      )}
 
       {isOwner && !confirmingDelete && (
         <div className="mt-3 flex gap-2">

@@ -4,6 +4,7 @@ import { logout } from "@/app/actions";
 import { AddDestinationForm } from "@/components/add-destination-form";
 import { DestinationCardInfo } from "@/components/destination-card-info";
 import { RealtimeRefresher } from "@/components/realtime-refresher";
+import type { DestinationClimate } from "@/lib/destination-climate";
 
 const CARD_GRADIENTS = [
   "linear-gradient(135deg, #ff6b4d, #ffb199)",
@@ -26,7 +27,7 @@ export default async function Home() {
     await Promise.all([
       supabase
         .from("destinations")
-        .select("id, title, description, image_url, created_at, created_by")
+        .select("id, title, description, image_url, climate, created_at, created_by")
         .order("created_at", { ascending: false }),
       supabase.from("votes").select("destination_id, user_id, score"),
       supabase.from("profiles").select("id, display_name"),
@@ -150,6 +151,7 @@ export default async function Home() {
                   myVote={myVote}
                   breakdown={breakdown}
                   isOwner={destination.created_by === user.id}
+                  climate={destination.climate as DestinationClimate | null}
                 />
               </li>
             );
