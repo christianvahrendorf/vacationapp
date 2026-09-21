@@ -70,9 +70,7 @@ export default async function Home() {
       <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-accent">Familie Meyer</p>
-          <h1 className="font-display text-3xl font-bold text-ink">
-            Destination Finder
-          </h1>
+          <h1 className="font-display text-3xl font-bold text-ink">Hi, {myName} 👋</h1>
         </div>
         <form
           action={logout}
@@ -108,7 +106,7 @@ export default async function Home() {
                 }`}
               >
                 <div
-                  className="relative flex h-28 items-start justify-between overflow-hidden p-4"
+                  className="relative h-60 overflow-hidden"
                   style={
                     destination.image_url
                       ? undefined
@@ -116,38 +114,50 @@ export default async function Home() {
                   }
                 >
                   {destination.image_url && (
-                    <>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={destination.image_url}
-                        alt=""
-                        className="absolute inset-0 h-full w-full object-cover"
-                      />
-                      <div
-                        aria-hidden
-                        className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"
-                      />
-                    </>
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={destination.image_url}
+                      alt=""
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
                   )}
-                  <span className="relative rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">
-                    Platz {index + 1}
-                  </span>
                   {!destination.image_url && (
                     <span
                       aria-hidden
-                      className="pointer-events-none absolute -bottom-5 right-3 select-none font-display text-7xl font-bold text-white/25"
+                      className="pointer-events-none absolute -bottom-4 right-3 select-none font-display text-7xl font-bold text-white/20"
                     >
                       {destination.title.charAt(0).toUpperCase()}
                     </span>
                   )}
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/0"
+                  />
+
+                  <div className="absolute inset-x-4 top-4 flex items-start justify-between">
+                    <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">
+                      Platz {index + 1}
+                    </span>
+                    <span className="flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">
+                      <span className="text-accent">★</span>
+                      {average !== null ? average.toFixed(1) : "–"}
+                    </span>
+                  </div>
+
+                  <div className="absolute inset-x-4 bottom-4">
+                    <h2 className="font-display text-2xl font-bold text-white">
+                      {destination.title}
+                    </h2>
+                    <p className="text-sm text-white/80">
+                      {count} {count === 1 ? "Stimme" : "Stimmen"}
+                    </p>
+                  </div>
                 </div>
 
                 <DestinationCardInfo
                   destinationId={destination.id}
                   title={destination.title}
                   description={destination.description}
-                  average={average}
-                  count={count}
                   myVote={myVote}
                   breakdown={breakdown}
                   isOwner={destination.created_by === user.id}

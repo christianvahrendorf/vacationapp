@@ -9,8 +9,6 @@ export function DestinationCardInfo({
   destinationId,
   title,
   description,
-  average,
-  count,
   myVote,
   breakdown,
   isOwner,
@@ -19,8 +17,6 @@ export function DestinationCardInfo({
   destinationId: string;
   title: string;
   description: string | null;
-  average: number | null;
-  count: number;
   myVote: number | null;
   breakdown: { name: string; score: number }[];
   isOwner: boolean;
@@ -96,19 +92,7 @@ export function DestinationCardInfo({
 
   return (
     <div className="p-5">
-      <div className="flex items-start justify-between gap-4">
-        <h2 className="font-display text-lg font-semibold text-ink">{title}</h2>
-        <div className="shrink-0 text-right">
-          <p className="font-display text-2xl font-bold text-ink">
-            {average !== null ? average.toFixed(1) : "–"}
-          </p>
-          <p className="text-xs text-ink-soft">
-            {count} {count === 1 ? "Stimme" : "Stimmen"}
-          </p>
-        </div>
-      </div>
-
-      {description && <p className="mt-1 text-sm text-ink-soft">{description}</p>}
+      {description && <p className="text-sm text-ink-soft">{description}</p>}
 
       {climate && (
         <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-xs text-ink-soft">
