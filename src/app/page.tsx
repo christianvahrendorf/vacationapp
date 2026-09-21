@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/app/actions";
 import { AddDestinationForm } from "@/components/add-destination-form";
-import { RatingWidget } from "@/components/rating-widget";
+import { DestinationCardInfo } from "@/components/destination-card-info";
 import { RealtimeRefresher } from "@/components/realtime-refresher";
 
 const CARD_GRADIENTS = [
@@ -141,47 +141,16 @@ export default async function Home() {
                   )}
                 </div>
 
-                <div className="p-5">
-                  <div className="flex items-start justify-between gap-4">
-                    <h2 className="font-display text-lg font-semibold text-ink">
-                      {destination.title}
-                    </h2>
-                    <div className="shrink-0 text-right">
-                      <p className="font-display text-2xl font-bold text-ink">
-                        {average !== null ? average.toFixed(1) : "–"}
-                      </p>
-                      <p className="text-xs text-ink-soft">
-                        {count} {count === 1 ? "Stimme" : "Stimmen"}
-                      </p>
-                    </div>
-                  </div>
-
-                  {destination.description && (
-                    <p className="mt-1 text-sm text-ink-soft">
-                      {destination.description}
-                    </p>
-                  )}
-
-                  {breakdown.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {breakdown.map((b, i) => (
-                        <span
-                          key={i}
-                          className="rounded-full bg-surface px-2.5 py-1 text-xs text-ink-soft"
-                        >
-                          {b.name} <span className="font-semibold text-ink">{b.score}</span>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="mt-4 flex items-center justify-between gap-3">
-                    <p className="text-xs font-medium text-ink-soft">
-                      Deine Bewertung
-                    </p>
-                    <RatingWidget destinationId={destination.id} myScore={myVote} />
-                  </div>
-                </div>
+                <DestinationCardInfo
+                  destinationId={destination.id}
+                  title={destination.title}
+                  description={destination.description}
+                  average={average}
+                  count={count}
+                  myVote={myVote}
+                  breakdown={breakdown}
+                  isOwner={destination.created_by === user.id}
+                />
               </li>
             );
           })}

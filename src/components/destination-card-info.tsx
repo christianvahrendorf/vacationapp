@@ -1,0 +1,171 @@
+"use client";
+
+import { useRef, useState, useTransition } from "react";
+import { deleteDestination, updateDestination } from "@/app/actions";
+import { RatingWidget } from "@/components/rating-widget";
+
+export function DestinationCardInfo({
+  destinationId,
+  title,
+  description,
+  average,
+  count,
+  myVote,
+  breakdown,
+  isOwner,
+}: {
+  destinationId: string;
+  title: string;
+  description: string | null;
+  average: number | null;
+  count: number;
+  myVote: number | null;
+  breakdown: { name: string; score: number }[];
+  isOwner: boolean;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const formRef = useRef<HTMLFormElement>(null);
+
+  if (editing) {
+    return (
+      <div className="p-5">
+        <form
+          ref={formRef}
+          action={(formData) => {
+            startTransition(async () => {
+              await updateDestination(destinationId, formData);
+              setEditing(false);
+            });
+          }}
+          className="space-y-3"
+        >
+          <div>
+            <label htmlFor={`title-${destinationId}`} className="block text-sm font-medium text-ink">
+              Titel
+            </label>
+            <input
+              id={`title-${destinationId}`}
+              name="title"
+              type="text"
+              required
+              defaultValue={title}
+              className="mt-1 w-full rounded-2xl border border-line bg-bg px-4 py-3 text-sm text-ink focus:border-accent focus:outline-none"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor={`description-${destinationId}`}
+              className="block text-sm font-medium text-ink"
+            >
+              Beschreibung
+            </label>
+            <textarea
+              id={`description-${destinationId}`}
+              name="description"
+              rows={3}
+              defaultValue={description ?? ""}
+              className="mt-1 w-full rounded-2xl border border-line bg-bg px-4 py-3 text-sm text-ink focus:border-accent focus:outline-none"
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={isPending}
+              className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
+            >
+              {isPending ? "Wird gespeichert…" : "Speichern"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              disabled={isPending}
+              className="rounded-full px-5 py-2.5 text-sm font-semibold text-ink-soft hover:bg-surface-2"
+            >
+              Abbrechen
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-5">
+      <div className="flex items-start justify-between gap-4">
+        <h2 className="font-display text-lg font-semibold text-ink">{title}</h2>
+        <div className="shrink-0 text-right">
+          <p className="font-display text-2xl font-bold text-ink">
+            {average !== null ? average.toFixed(1) : "–"}
+          </p>
+          <p className="text-xs text-ink-soft">
+            {count} {count === 1 ? "Stimme" : "Stimmen"}
+          </p>
+        </div>
+      </div>
+
+      {description && <p className="mt-1 text-sm text-ink-soft">{description}</p>}
+
+      {isOwner && !confirmingDelete && (
+        <div className="mt-2 flex gap-3">
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            className="text-xs font-medium text-ink-soft underline-offset-2 hover:text-ink hover:underline"
+          >
+            Bearbeiten
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfirmingDelete(true)}
+            className="text-xs font-medium text-ink-soft underline-offset-2 hover:text-ink hover:underline"
+          >
+            Löschen
+          </button>
+        </div>
+      )}
+
+      {isOwner && confirmingDelete && (
+        <div className="mt-2 flex items-center gap-3">
+          <span className="text-xs font-medium text-ink">Wirklich löschen?</span>
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() =>
+              startTransition(async () => {
+                await deleteDestination(destinationId);
+              })
+            }
+            className="text-xs font-semibold text-accent underline-offset-2 hover:underline disabled:opacity-50"
+          >
+            {isPending ? "Wird gelöscht…" : "Ja, löschen"}
+          </button>
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() => setConfirmingDelete(false)}
+            className="text-xs font-medium text-ink-soft underline-offset-2 hover:text-ink hover:underline disabled:opacity-50"
+          >
+            Abbrechen
+          </button>
+        </div>
+      )}
+
+      {breakdown.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {breakdown.map((b, i) => (
+            <span key={i} className="rounded-full bg-surface px-2.5 py-1 text-xs text-ink-soft">
+              {b.name} <span className="font-semibold text-ink">{b.score}</span>
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-4 flex items-center justify-between gap-3">
+        <p className="text-xs font-medium text-ink-soft">Deine Bewertung</p>
+        <RatingWidget destinationId={destinationId} myScore={myVote} />
+      </div>
+    </div>
+  );
+}
