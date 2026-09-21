@@ -2,7 +2,7 @@ import sharp from "sharp";
 import { mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
-const svgPath = fileURLToPath(new URL("./icon-source.svg", import.meta.url));
+const svgPath = fileURLToPath(new URL("../public/logo/meyer-icon-square.png", import.meta.url));
 
 const targets = [
   { out: "public/icons/icon-192.png", size: 192 },

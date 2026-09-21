@@ -112,9 +112,13 @@ export default async function Home() {
       <RealtimeRefresher />
 
       <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="text-sm font-medium text-accent">Familie Meyer</p>
-          <h1 className="font-display text-3xl font-bold text-ink">Hi, {myName} 👋</h1>
+        <div className="flex items-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo/meyer-emblem.png" alt="" className="h-11 w-11 object-contain" />
+          <div>
+            <p className="text-sm font-medium text-accent">Familie Meyer</p>
+            <h1 className="font-display text-3xl font-bold text-ink">Hi, {myName} 👋</h1>
+          </div>
         </div>
         <form
           action={logout}

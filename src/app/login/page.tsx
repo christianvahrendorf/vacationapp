@@ -36,7 +36,14 @@ export default async function LoginPage({
 
       <div className="relative z-10 flex-1 rounded-t-[2rem] bg-bg px-6 pt-8 pb-12 shadow-[0_-12px_30px_rgba(0,0,0,0.12)]">
         <div className="mx-auto w-full max-w-sm">
-          <h2 className="text-lg font-semibold text-ink">Anmelden</h2>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo/meyer-logo.png"
+            alt="Familie Meyer"
+            className="mx-auto h-20 w-auto object-contain"
+          />
+
+          <h2 className="mt-6 text-lg font-semibold text-ink">Anmelden</h2>
           <p className="mt-1 text-sm text-ink-soft">
             Melde dich mit deinem Familien-Account an.
           </p>
