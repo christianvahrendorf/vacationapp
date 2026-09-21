@@ -101,3 +101,57 @@ export async function castVote(destinationId: string, score: number) {
 
   revalidatePath("/");
 }
+
+export async function toggleParticipant(destinationId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data: existing } = await supabase
+    .from("participants")
+    .select("id")
+    .eq("destination_id", destinationId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase.from("participants").delete().eq("id", existing.id);
+  } else {
+    await supabase
+      .from("participants")
+      .insert({ destination_id: destinationId, user_id: user.id });
+  }
+
+  revalidatePath("/");
+}
+
+export async function addComment(destinationId: string, formData: FormData) {
+  const body = String(formData.get("body") ?? "").trim();
+  if (!body) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  await supabase
+    .from("comments")
+    .insert({ destination_id: destinationId, user_id: user.id, body });
+
+  revalidatePath("/");
+}
+
+export async function deleteComment(commentId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  await supabase.from("comments").delete().eq("id", commentId);
+
+  revalidatePath("/");
+}

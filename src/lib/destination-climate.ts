@@ -10,9 +10,11 @@ const BEST_MONTH_COUNT = 4;
 const CLIMATE_YEARS = 10;
 
 export type DestinationClimate = {
-  bestMonths: number[]; // 0-11, sorted ascending
-  bestMonthsLabel: string; // e.g. "Mai–Jun, Sep–Okt"
-  avgHighBestMonths: number; // °C, rounded
+  lat: number;
+  lon: number;
+  bestMonths?: number[]; // 0-11, sorted ascending
+  bestMonthsLabel?: string; // e.g. "Mai–Jun, Sep–Okt"
+  avgHighBestMonths?: number; // °C, rounded
 };
 
 async function fetchJson(url: string, signal: AbortSignal) {
@@ -123,7 +125,7 @@ export async function findDestinationClimate(
       coordinates.lon,
       controller.signal
     );
-    if (!avgHighs) return null;
+    if (!avgHighs) return coordinates;
 
     const bestMonths = pickBestMonths(avgHighs);
     const avgHighBestMonths = Math.round(
@@ -131,6 +133,7 @@ export async function findDestinationClimate(
     );
 
     return {
+      ...coordinates,
       bestMonths,
       bestMonthsLabel: formatMonthRanges(bestMonths),
       avgHighBestMonths,

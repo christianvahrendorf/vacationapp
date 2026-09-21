@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/app/actions";
 import { AddDestinationForm } from "@/components/add-destination-form";
 import { DestinationCardInfo } from "@/components/destination-card-info";
+import { DestinationsMap } from "@/components/destinations-map";
 import { RealtimeRefresher } from "@/components/realtime-refresher";
 import type { DestinationClimate } from "@/lib/destination-climate";
 
@@ -23,15 +24,25 @@ export default async function Home() {
 
   if (!user) redirect("/login");
 
-  const [{ data: destinations }, { data: votes }, { data: profiles }] =
-    await Promise.all([
-      supabase
-        .from("destinations")
-        .select("id, title, description, image_url, climate, created_at, created_by")
-        .order("created_at", { ascending: false }),
-      supabase.from("votes").select("destination_id, user_id, score"),
-      supabase.from("profiles").select("id, display_name"),
-    ]);
+  const [
+    { data: destinations },
+    { data: votes },
+    { data: profiles },
+    { data: participants },
+    { data: comments },
+  ] = await Promise.all([
+    supabase
+      .from("destinations")
+      .select("id, title, description, image_url, climate, created_at, created_by")
+      .order("created_at", { ascending: false }),
+    supabase.from("votes").select("destination_id, user_id, score"),
+    supabase.from("profiles").select("id, display_name"),
+    supabase.from("participants").select("destination_id, user_id"),
+    supabase
+      .from("comments")
+      .select("id, destination_id, user_id, body, created_at")
+      .order("created_at", { ascending: true }),
+  ]);
 
   const nameById = new Map((profiles ?? []).map((p) => [p.id, p.display_name]));
   const myName = nameById.get(user.id) ?? user.email ?? "Du";
@@ -54,7 +65,33 @@ export default async function Home() {
         }))
         .sort((a, b) => a.name.localeCompare(b.name));
 
-      return { destination, average, count: votesFor.length, myVote, breakdown };
+      const participantsFor = (participants ?? []).filter(
+        (p) => p.destination_id === destination.id
+      );
+      const participantNames = participantsFor
+        .map((p) => nameById.get(p.user_id) ?? "Unbekannt")
+        .sort((a, b) => a.localeCompare(b));
+      const isParticipating = participantsFor.some((p) => p.user_id === user.id);
+
+      const destinationComments = (comments ?? [])
+        .filter((c) => c.destination_id === destination.id)
+        .map((c) => ({
+          id: c.id,
+          authorName: nameById.get(c.user_id) ?? "Unbekannt",
+          body: c.body,
+          isOwn: c.user_id === user.id,
+        }));
+
+      return {
+        destination,
+        average,
+        count: votesFor.length,
+        myVote,
+        breakdown,
+        participantNames,
+        isParticipating,
+        comments: destinationComments,
+      };
     })
     .sort((a, b) => {
       if (a.average === null && b.average === null) return 0;
@@ -62,6 +99,13 @@ export default async function Home() {
       if (b.average === null) return -1;
       return b.average - a.average;
     });
+
+  const mapPins = ranked
+    .map(({ destination }) => {
+      const climate = destination.climate as DestinationClimate | null;
+      return climate ? { id: destination.id, title: destination.title, lat: climate.lat, lon: climate.lon } : null;
+    })
+    .filter((pin): pin is { id: string; title: string; lat: number; lon: number } => pin !== null);
 
   return (
     <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
@@ -90,13 +134,28 @@ export default async function Home() {
         <AddDestinationForm />
       </div>
 
+      <DestinationsMap pins={mapPins} />
+
       {ranked.length === 0 ? (
         <p className="rounded-3xl bg-surface px-5 py-10 text-center text-sm text-ink-soft">
           Noch keine Ziele vorgeschlagen. Sei die/der Erste!
         </p>
       ) : (
         <ol className="space-y-5">
-          {ranked.map(({ destination, average, count, myVote, breakdown }, index) => {
+          {ranked.map(
+            (
+              {
+                destination,
+                average,
+                count,
+                myVote,
+                breakdown,
+                participantNames,
+                isParticipating,
+                comments: destinationComments,
+              },
+              index
+            ) => {
             const isLeader = index === 0 && average !== null;
             return (
               <li
@@ -162,6 +221,9 @@ export default async function Home() {
                   breakdown={breakdown}
                   isOwner={destination.created_by === user.id}
                   climate={destination.climate as DestinationClimate | null}
+                  participantNames={participantNames}
+                  isParticipating={isParticipating}
+                  comments={destinationComments}
                 />
               </li>
             );

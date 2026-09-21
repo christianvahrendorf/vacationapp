@@ -2,6 +2,8 @@
 
 import { useRef, useState, useTransition } from "react";
 import { deleteDestination, updateDestination } from "@/app/actions";
+import { CommentsSection } from "@/components/comments-section";
+import { ParticipantsSection } from "@/components/participants-section";
 import { RatingWidget } from "@/components/rating-widget";
 import type { DestinationClimate } from "@/lib/destination-climate";
 
@@ -13,6 +15,9 @@ export function DestinationCardInfo({
   breakdown,
   isOwner,
   climate,
+  participantNames,
+  isParticipating,
+  comments,
 }: {
   destinationId: string;
   title: string;
@@ -21,6 +26,9 @@ export function DestinationCardInfo({
   breakdown: { name: string; score: number }[];
   isOwner: boolean;
   climate: DestinationClimate | null;
+  participantNames: string[];
+  isParticipating: boolean;
+  comments: { id: string; authorName: string; body: string; isOwn: boolean }[];
 }) {
   const [editing, setEditing] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -103,6 +111,12 @@ export function DestinationCardInfo({
         </div>
       )}
 
+      <ParticipantsSection
+        destinationId={destinationId}
+        names={participantNames}
+        isParticipating={isParticipating}
+      />
+
       {isOwner && !confirmingDelete && (
         <div className="mt-3 flex gap-2">
           <button
@@ -162,6 +176,8 @@ export function DestinationCardInfo({
         <p className="text-xs font-medium text-ink-soft">Deine Bewertung</p>
         <RatingWidget destinationId={destinationId} myScore={myVote} />
       </div>
+
+      <CommentsSection destinationId={destinationId} comments={comments} />
     </div>
   );
 }

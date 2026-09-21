@@ -21,6 +21,16 @@ export function RealtimeRefresher() {
         { event: "*", schema: "public", table: "destinations" },
         () => router.refresh()
       )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "participants" },
+        () => router.refresh()
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "comments" },
+        () => router.refresh()
+      )
       .subscribe();
 
     return () => {
