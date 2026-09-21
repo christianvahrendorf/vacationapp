@@ -23,6 +23,22 @@ async function fetchJson(url: string, signal: AbortSignal) {
   return res.json();
 }
 
+async function findCoordinatesViaWikidata(
+  wikibaseItem: string,
+  signal: AbortSignal
+): Promise<{ lat: number; lon: number } | null> {
+  const entity = await fetchJson(
+    `https://www.wikidata.org/wiki/Special:EntityData/${encodeURIComponent(wikibaseItem)}.json`,
+    signal
+  );
+  const claim = entity?.entities?.[wikibaseItem]?.claims?.P625?.[0]?.mainsnak?.datavalue?.value;
+  const lat = claim?.latitude as number | undefined;
+  const lon = claim?.longitude as number | undefined;
+  if (typeof lat !== "number" || typeof lon !== "number") return null;
+
+  return { lat, lon };
+}
+
 async function findCoordinates(
   title: string,
   signal: AbortSignal
@@ -40,9 +56,18 @@ async function findCoordinates(
   );
   const lat = summary?.coordinates?.lat as number | undefined;
   const lon = summary?.coordinates?.lon as number | undefined;
-  if (typeof lat !== "number" || typeof lon !== "number") return null;
+  if (typeof lat === "number" && typeof lon === "number") {
+    return { lat, lon };
+  }
 
-  return { lat, lon };
+  // Some region articles (e.g. "Provence") have no coordinates in the
+  // Wikipedia infobox, but their linked Wikidata item usually does.
+  const wikibaseItem = summary?.wikibase_item as string | undefined;
+  if (wikibaseItem) {
+    return findCoordinatesViaWikidata(wikibaseItem, signal);
+  }
+
+  return null;
 }
 
 async function fetchMonthlyAvgHighs(
