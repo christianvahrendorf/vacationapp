@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Familjen_Grotesk, Work_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -15,6 +15,16 @@ const workSans = Work_Sans({
 export const metadata: Metadata = {
   title: "Destination Finder der Familie Meyer",
   description: "Urlaubsziele vorschlagen und gemeinsam abstimmen",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Destination Finder",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#16181d",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
