@@ -91,6 +91,7 @@ export default async function Home() {
         participantNames,
         isParticipating,
         comments: destinationComments,
+        createdByName: nameById.get(destination.created_by) ?? "Unbekannt",
       };
     })
     .sort((a, b) => {
@@ -157,6 +158,7 @@ export default async function Home() {
                 participantNames,
                 isParticipating,
                 comments: destinationComments,
+                createdByName,
               },
               index
             ) => {
@@ -228,6 +230,7 @@ export default async function Home() {
                   participantNames={participantNames}
                   isParticipating={isParticipating}
                   comments={destinationComments}
+                  createdByName={createdByName}
                 />
               </li>
             );

@@ -18,6 +18,7 @@ export function DestinationCardInfo({
   participantNames,
   isParticipating,
   comments,
+  createdByName,
 }: {
   destinationId: string;
   title: string;
@@ -29,6 +30,7 @@ export function DestinationCardInfo({
   participantNames: string[];
   isParticipating: boolean;
   comments: { id: string; authorName: string; body: string; isOwn: boolean }[];
+  createdByName: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -100,7 +102,9 @@ export function DestinationCardInfo({
 
   return (
     <div className="p-5">
-      {description && <p className="text-sm text-ink-soft">{description}</p>}
+      <p className="text-xs text-ink-soft">Vorgeschlagen von {createdByName}</p>
+
+      {description && <p className="mt-1 text-sm text-ink-soft">{description}</p>}
 
       {climate && (
         <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-xs text-ink-soft">
