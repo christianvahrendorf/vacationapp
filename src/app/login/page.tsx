@@ -9,25 +9,28 @@ export default async function LoginPage({
 
   return (
     <div className="flex min-h-screen flex-col bg-ink">
-      <div className="relative flex min-h-[280px] flex-1 flex-col justify-center overflow-hidden px-6 pt-14 pb-16 sm:min-h-[320px]">
-        <div
-          aria-hidden
-          className="absolute -top-16 -right-16 h-56 w-56 rounded-full"
-          style={{ background: "var(--accent)", opacity: 0.9 }}
+      <div className="relative min-h-[320px] flex-1 overflow-hidden sm:min-h-[380px]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/login-hero.jpg"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
         />
         <div
           aria-hidden
-          className="absolute top-10 right-24 h-16 w-16 rounded-full border-2 border-white/20"
+          className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10"
         />
-        <div className="relative mx-auto w-full max-w-sm">
-          <p className="text-sm font-medium text-white/60">Familie Meyer</p>
-          <h1 className="mt-2 text-4xl font-bold leading-tight text-white">
-            Wohin geht&apos;s als Nächstes?
-          </h1>
-          <p className="mt-3 text-sm text-white/70">
-            Schlagt Ziele vor, stimmt gemeinsam ab und findet euren nächsten
-            Urlaub.
-          </p>
+        <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-10 pt-14">
+          <div className="mx-auto w-full max-w-sm">
+            <p className="text-sm font-medium text-white/70">Familie Meyer</p>
+            <h1 className="mt-2 text-4xl font-bold leading-tight text-white">
+              Wohin geht&apos;s als Nächstes?
+            </h1>
+            <p className="mt-3 text-sm text-white/80">
+              Schlagt Ziele vor, stimmt gemeinsam ab und findet euren nächsten
+              Urlaub.
+            </p>
+          </div>
         </div>
       </div>
 
