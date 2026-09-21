@@ -177,7 +177,10 @@ export function DestinationCardInfo({
       )}
 
       <div className="mt-4 flex items-center justify-between gap-3">
-        <p className="text-xs font-medium text-ink-soft">Deine Bewertung</p>
+        <div>
+          <p className="text-xs font-medium text-ink-soft">Deine Bewertung</p>
+          <p className="text-[11px] text-ink-soft/70">1 = niedrig, 5 = hoch</p>
+        </div>
         <RatingWidget destinationId={destinationId} myScore={myVote} />
       </div>
 
