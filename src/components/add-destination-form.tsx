@@ -13,9 +13,12 @@ export function AddDestinationForm() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+        className="flex w-full items-center gap-3 rounded-full bg-surface px-5 py-4 text-left text-ink-soft transition-colors hover:bg-surface-2"
       >
-        + Neues Ziel vorschlagen
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-lg font-semibold text-accent-ink">
+          +
+        </span>
+        <span className="font-medium">Wohin soll&apos;s als Nächstes gehen?</span>
       </button>
     );
   }
@@ -30,10 +33,10 @@ export function AddDestinationForm() {
           setOpen(false);
         });
       }}
-      className="space-y-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200"
+      className="space-y-4 rounded-3xl bg-surface p-5"
     >
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="title" className="block text-sm font-medium text-ink">
           Titel
         </label>
         <input
@@ -42,11 +45,11 @@ export function AddDestinationForm() {
           type="text"
           required
           placeholder="z. B. Toskana, Italien"
-          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+          className="mt-1 w-full rounded-2xl border border-line bg-bg px-4 py-3 text-sm text-ink placeholder:text-ink-soft focus:border-accent focus:outline-none"
         />
       </div>
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="description" className="block text-sm font-medium text-ink">
           Beschreibung
         </label>
         <textarea
@@ -54,21 +57,21 @@ export function AddDestinationForm() {
           name="description"
           rows={3}
           placeholder="Warum sollten wir dorthin fahren?"
-          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+          className="mt-1 w-full rounded-2xl border border-line bg-bg px-4 py-3 text-sm text-ink placeholder:text-ink-soft focus:border-accent focus:outline-none"
         />
       </div>
       <div className="flex gap-2">
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+          className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-bg transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {isPending ? "Wird gespeichert…" : "Vorschlagen"}
         </button>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+          className="rounded-full px-5 py-2.5 text-sm font-semibold text-ink-soft hover:bg-surface-2"
         >
           Abbrechen
         </button>

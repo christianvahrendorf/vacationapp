@@ -13,7 +13,11 @@ export function RatingWidget({
   const [isPending, startTransition] = useTransition();
 
   return (
-    <div className="flex items-center gap-1" role="group" aria-label="Bewertung 1 bis 5">
+    <div
+      className="inline-flex rounded-full bg-surface p-1"
+      role="group"
+      aria-label="Deine Bewertung, 1 bis 5"
+    >
       {[1, 2, 3, 4, 5].map((score) => {
         const active = myScore === score;
         return (
@@ -28,10 +32,10 @@ export function RatingWidget({
             }
             aria-pressed={active}
             aria-label={`${score} von 5`}
-            className={`h-9 w-9 rounded-lg text-sm font-semibold transition-colors disabled:opacity-50 ${
+            className={`h-9 w-9 rounded-full text-sm font-semibold transition-colors disabled:opacity-50 ${
               active
-                ? "bg-amber-500 text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                ? "bg-accent text-accent-ink"
+                : "text-ink-soft hover:bg-surface-2"
             }`}
           >
             {score}

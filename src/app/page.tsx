@@ -5,6 +5,14 @@ import { AddDestinationForm } from "@/components/add-destination-form";
 import { RatingWidget } from "@/components/rating-widget";
 import { RealtimeRefresher } from "@/components/realtime-refresher";
 
+const CARD_GRADIENTS = [
+  "linear-gradient(135deg, #ff6b4d, #ffb199)",
+  "linear-gradient(135deg, #0f9b8e, #79e0c9)",
+  "linear-gradient(135deg, #5b5fef, #a5a8ff)",
+  "linear-gradient(135deg, #e8a33d, #ffd68a)",
+  "linear-gradient(135deg, #2f7a4f, #8fd4a8)",
+];
+
 export default async function Home() {
   const supabase = await createClient();
 
@@ -55,83 +63,108 @@ export default async function Home() {
     });
 
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
+    <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
       <RealtimeRefresher />
 
-      <header className="mb-6 flex items-center justify-between">
+      <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">
-            Destination Finder der Familie Meyer
+          <p className="text-sm font-medium text-accent">Familie Meyer</p>
+          <h1 className="font-display text-3xl font-bold text-ink">
+            Destination Finder
           </h1>
-          <p className="text-sm text-slate-500">Angemeldet als {myName}</p>
         </div>
-        <form action={logout}>
+        <form
+          action={logout}
+          className="flex items-center gap-2 rounded-full bg-surface p-1.5 pl-4"
+        >
+          <span className="text-sm text-ink-soft">{myName}</span>
           <button
             type="submit"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+            className="rounded-full bg-bg px-3 py-1.5 text-sm font-medium text-ink shadow-sm hover:bg-surface-2"
           >
             Abmelden
           </button>
         </form>
       </header>
 
-      <div className="mb-6">
+      <div className="mb-8">
         <AddDestinationForm />
       </div>
 
       {ranked.length === 0 ? (
-        <p className="text-sm text-slate-500">
+        <p className="rounded-3xl bg-surface px-5 py-10 text-center text-sm text-ink-soft">
           Noch keine Ziele vorgeschlagen. Sei die/der Erste!
         </p>
       ) : (
-        <ol className="space-y-4">
-          {ranked.map(({ destination, average, count, myVote, breakdown }, index) => (
-            <li
-              key={destination.id}
-              className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-medium text-slate-400">
-                    #{index + 1}
-                  </p>
-                  <h2 className="text-lg font-semibold text-slate-900">
-                    {destination.title}
-                  </h2>
+        <ol className="space-y-5">
+          {ranked.map(({ destination, average, count, myVote, breakdown }, index) => {
+            const isLeader = index === 0 && average !== null;
+            return (
+              <li
+                key={destination.id}
+                className={`overflow-hidden rounded-3xl bg-bg ${
+                  isLeader ? "border-2 border-accent" : "border border-line"
+                }`}
+              >
+                <div
+                  className="relative flex h-28 items-start justify-between overflow-hidden p-4"
+                  style={{ background: CARD_GRADIENTS[index % CARD_GRADIENTS.length] }}
+                >
+                  <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">
+                    Platz {index + 1}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -bottom-5 right-3 select-none font-display text-7xl font-bold text-white/25"
+                  >
+                    {destination.title.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <h2 className="font-display text-lg font-semibold text-ink">
+                      {destination.title}
+                    </h2>
+                    <div className="shrink-0 text-right">
+                      <p className="font-display text-2xl font-bold text-ink">
+                        {average !== null ? average.toFixed(1) : "–"}
+                      </p>
+                      <p className="text-xs text-ink-soft">
+                        {count} {count === 1 ? "Stimme" : "Stimmen"}
+                      </p>
+                    </div>
+                  </div>
+
                   {destination.description && (
-                    <p className="mt-1 text-sm text-slate-600">
+                    <p className="mt-1 text-sm text-ink-soft">
                       {destination.description}
                     </p>
                   )}
-                </div>
-                <div className="shrink-0 text-right">
-                  <p className="text-2xl font-bold text-slate-900">
-                    {average !== null ? average.toFixed(1) : "–"}
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    {count} {count === 1 ? "Stimme" : "Stimmen"}
-                  </p>
-                </div>
-              </div>
 
-              <div className="mt-4">
-                <p className="mb-1 text-xs font-medium text-slate-500">
-                  Deine Bewertung
-                </p>
-                <RatingWidget destinationId={destination.id} myScore={myVote} />
-              </div>
+                  {breakdown.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {breakdown.map((b, i) => (
+                        <span
+                          key={i}
+                          className="rounded-full bg-surface px-2.5 py-1 text-xs text-ink-soft"
+                        >
+                          {b.name} <span className="font-semibold text-ink">{b.score}</span>
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
-              {breakdown.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
-                  {breakdown.map((b, i) => (
-                    <span key={i}>
-                      {b.name}: <span className="font-medium">{b.score}</span>
-                    </span>
-                  ))}
+                  <div className="mt-4 flex items-center justify-between gap-3">
+                    <p className="text-xs font-medium text-ink-soft">
+                      Deine Bewertung
+                    </p>
+                    <RatingWidget destinationId={destination.id} myScore={myVote} />
+                  </div>
                 </div>
-              )}
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ol>
       )}
     </div>
